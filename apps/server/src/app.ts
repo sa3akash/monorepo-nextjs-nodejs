@@ -1,5 +1,5 @@
-import express from "express";
-import { Server } from ".";
+import express from 'express';
+import { Server } from '.';
 
 class MainApp {
   public runApp() {

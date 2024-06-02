@@ -4,13 +4,20 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "format": "prettier \"{apps,libs}/**/*.{ts,tsx,js,json}\" --ignore-path .gitignore --write",
+    "build": "pnpm exec nx run-many --target=build",
+    "tsc": "pnpm exec nx run-many --target=tsc",
+    "lint": "pnpm exec nx run-many --target=lint",
+    "validate": "pnpm format && pnpm tsc && pnpm lint && pnpm build",
+    "prepare": "husky install",
+    "cloc": "npx cloc --exclude-dir=node_modules,dist,build,pnpm-lock.yaml,package.json,package-lock.json,@generated,generated,.next,.nx ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5",
-    "nx": "19.1.1"
+    "nx": "19.1.1",
+    "prettier": "^3.3.0",
+    "typescript": "^5"
   }
 }
