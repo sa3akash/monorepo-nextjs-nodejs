@@ -1,0 +1,110 @@
+If your shared libraries are written in TypeScript and you want to include them in the Docker setup for your TypeScript Monorepo, you can follow these steps:
+
+1. Structure your Monorepo to accommodate TypeScript libraries:
+
+```
+- monorepo
+  - frontend
+    - package.json
+    - package-lock.json
+    - src
+    - public
+    - tsconfig.json
+  - backend
+    - package.json
+    - package-lock.json
+    - src
+    - tsconfig.json
+  - shared-lib1
+    - package.json
+    - package-lock.json
+    - src
+    - tsconfig.json
+  - shared-lib2
+    - package.json
+    - package-lock.json
+    - src
+    - tsconfig.json
+```
+
+2. Update the `Dockerfile` to build TypeScript libraries:
+
+```Dockerfile
+# Frontend Dockerfile
+FROM node:14 as frontend
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm install
+COPY frontend ./
+RUN npm run build
+
+# Backend Dockerfile
+FROM node:14 as backend
+WORKDIR /app/backend
+COPY backend/package.json backend/package-lock.json ./
+RUN npm install
+COPY backend ./
+
+# Shared Libraries Dockerfile
+FROM node:14 as shared
+WORKDIR /app/shared-lib1
+COPY shared-lib1/package.json shared-lib1/package-lock.json ./
+RUN npm install
+COPY shared-lib1 ./
+RUN npm run build
+
+WORKDIR /app/shared-lib2
+COPY shared-lib2/package.json shared-lib2/package-lock.json ./
+RUN npm install
+COPY shared-lib2 ./
+RUN npm run build
+
+# Combined Dockerfile for final build
+FROM node:14
+WORKDIR /app
+COPY --from=frontend /app/frontend/build /app/frontend
+COPY --from=backend /app/backend /app/backend
+COPY --from=shared /app/shared-lib1 /app/shared-lib1
+COPY --from=shared /app/shared-lib2 /app/shared-lib2
+RUN npm install -g nodemon
+
+# Expose the ports
+EXPOSE 3000
+EXPOSE 4000
+
+# Running the applications
+CMD ["npm", "run", "start"]
+```
+
+3. Update the `docker-compose.yml` to include TypeScript shared libraries:
+
+```yaml
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "4000:4000"
+
+  shared:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shared
+```
+
+4. Run `docker-compose up` in the root of your Monorepo to build and run the frontend, backend, and shared libraries containers.
+
+With this setup, your TypeScript shared libraries can be included in the Docker configuration for your Monorepo, and they will be available to both the frontend and backend applications for use in their TypeScript code.
