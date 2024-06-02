@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "{projectRoot}/.next,dist,build"
+      ],
+      "cache": true
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ],
+      "cache": true
+    },
+    "tsc": {
+      "dependsOn": [
+        "^tsc"
+      ],
+      "cache": true
+    }
+  },
+  "defaultBase": "master",
+  "nxCloudAccessToken": "MTk2OWI1NjktMTM1ZS00ZWNlLTg0MTctMTk4MDBkYmE1OWFmfHJlYWQtd3JpdGU="
+}

@@ -18,6 +18,8 @@ node_modules
 .pnp
 dist
 
+.nx
+
 # production
 build
 /build
@@ -41,3 +43,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+.nx/cache
